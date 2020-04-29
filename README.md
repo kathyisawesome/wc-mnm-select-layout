@@ -15,5 +15,6 @@ In the "Mix and Match" tab of the Product Data metabox you will an additional op
 
 ### Important
 
-1. This is proof of concept and does not receive priority support.
+1. This is provided as is and does not receive priority support.
 2. Can not be used for a container with no maximum quantity.
+3. Please test thoroughly before using in production.
