@@ -224,13 +224,13 @@ class WC_MNM_Select_Layout {
 	 */
 	public static function get_posted_container_configuration( $posted_config, $product ) {
 
-		$posted_config = array();
-
 		if ( is_numeric( $product ) ) {
 			$product = wc_get_product( $product );
 		}
 
-		if ( is_object( $product ) && $product->is_type( 'mix-and-match' ) ) {
+		if ( is_object( $product ) && $product->is_type( 'mix-and-match' ) && 'select' === $product->get_layout() ) {
+
+			$posted_config = array();
 
 			$product_id      = $product->get_id();
 			$child_items	 = $product->get_children();
@@ -247,7 +247,7 @@ class WC_MNM_Select_Layout {
 					$posted_data = $_GET;
 				}
 
-				if( isset( $posted_data[ '_mnm_select' ] ) ) {
+				if ( isset( $posted_data[ '_mnm_select' ] ) ) {
 
 					$counted = array_count_values( $posted_data[ '_mnm_select' ] );
 
@@ -300,7 +300,7 @@ class WC_MNM_Select_Layout {
 		// Return the array as _mnm_select = array() if $container is passed.
 		if ( $container instanceof WC_Product_Mix_and_Match ) {
 			
-			if( 'select' === $container->get_layout() ) {
+			if ( 'select' === $container->get_layout() ) {
 
 				$select_form_data = array();
 				$counter = 1;
@@ -309,7 +309,7 @@ class WC_MNM_Select_Layout {
 
 					$quantity = $form_data[$child_id] = isset( $child_config['quantity'] ) ? intval( $child_config['quantity'] ) : 0;
 
-					for ($x = 1; $x <= $quantity; $x++) {
+					for ( $x = 1; $x <= $quantity; $x++ ) {
 					    $select_form_data['_mnm_select'][$counter] = $child_id;
 						$counter++;
 					}
