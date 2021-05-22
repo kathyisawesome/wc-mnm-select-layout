@@ -14,7 +14,7 @@
  * @author  Kathy Darling
  * @package WooCommerce Mix and Match/Templates
  * @since   1.0.0-beta
- * @version 1.0.0-beta
+ * @version 1.0.0-beta-1
  */
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ){
@@ -30,12 +30,12 @@ global $product;
 				<span class="required"><?php _e( 'Required', 'wc-mnm-select-layout' ); ?></span>
 			<?php } ?>
 	</label>
-	<select name="_mnm_select[<?php echo esc_attr( $counter );?>]" class="mnm_select" <?php echo $required ? 'required' : ''; ?> >
+	<select name="_mnm_select[<?php echo esc_attr( $counter );?>]" class="mnm_select" <?php echo $required ? 'required' : ''; ?> data-default="<?php echo esc_attr( $default );?>" >
 		<option value=""><?php _e( 'Make a selection', 'wc-mnm-select-layout' ); ?></option>
 
 		<?php
 
-		$default = isset( $_REQUEST[ '_mnm_select' ] ) && isset( $_REQUEST[ '_mnm_select' ][$counter] ) ? intval( $_REQUEST[ '_mnm_select'][$counter] ) : '';
+		$default = isset( $_REQUEST[ '_mnm_select' ] ) && isset( $_REQUEST[ '_mnm_select' ][$counter] ) ? intval( $_REQUEST[ '_mnm_select'][$counter] ) : $default;
 
 		foreach ( $product->get_available_children() as $child ) {
 			printf( '<option value="%d" %s>%s</option>', esc_attr( $child->get_id() ), selected( $child->get_id(), $default, false ), $child->get_name() );

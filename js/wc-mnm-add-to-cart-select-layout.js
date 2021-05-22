@@ -59,8 +59,11 @@
 		 */
 		this.reset = function( event, container ) {
 
+			var default_selection;
+
 			self.$selects.each( function(i) {
-				$(this).val(0);			
+				default_selection = 'undefined' !== $(this).data( 'default' ) ? $(this).data( 'default' ) : '';
+				$(this).val( default_selection );			
 			});
 
 		};

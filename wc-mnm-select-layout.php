@@ -159,7 +159,8 @@ class WC_MNM_Select_Layout {
 						array(
 							'container' => $product,
 							'counter'	=> $counter,
-							'required'  => $counter <= $min
+							'required'  => $counter <= $min,
+							'default'   => apply_filters( 'woocommerce_mnm_select_default', '', $counter, $product ),
 						),
 						'',
 						self::plugin_path() . '/templates/'
