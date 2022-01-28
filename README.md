@@ -25,3 +25,7 @@ In the "Mix and Match" tab of the Product Data metabox you will an additional op
 2. This requires [Mix and Match]( https://woocommerce.com/products/woocommerce-mix-and-match-products ) 1.12+
 3. Can not be used for a container with no maximum quantity.
 4. Please test thoroughly before using in production.
+
+### Automatic plugin updates
+
+Plugin updates can be enabled by installing the [Git Updater](https://git-updater.com/) plugin.
