@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name: WooCommerce Mix and Match -  Select Layout
+ * Plugin Name: WooCommerce Mix and Match - Select Layout
  * Plugin URI: http://www.woocommerce.com/products/woocommerce-mix-and-match-products/
- * Description: Fill a container by dropdown select inputs
  * Version: 1.0.0-beta-1
+ * Description: Fill Mix and Match container by dropdown select inputs
  * Author: Kathy Darling
  * Author URI: http://kathyisawesome.com/
  * Developer: Kathy Darling
