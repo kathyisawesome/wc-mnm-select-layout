@@ -29,7 +29,6 @@ class WC_MNM_Select_Layout {
 	 * constants
 	 */
 	CONST VERSION = '1.0.0-beta';
-	CONST REQUIRED_WOO = '3.9.0';
 
 	/**
 	 * WC_MNM_Select_Layout Constructor
