@@ -340,14 +340,6 @@ class WC_MNM_Select_Layout {
 
 		wp_register_script( 'wc-mnm-add-to-cart-select-layout', self::plugin_url() . '/assets/js/frontend/wc-mnm-add-to-cart-select-layout' . $suffix . '.js', array( 'wc-add-to-cart-mnm' ), WC_MNM_Select_Layout::VERSION, true );
 
-		$params = array(
-			'i18n_max_weight_error' => __( 'Your configuration is too heavy. Please choose less than %max to continue&hellip;', 'wc-mnm-select-layout' ),
-			'i18n_weight_format'    => sprintf( _x( '%1$s%2$s%3$s', '"Total Weight" string followed by weight followed by weight unit', 'woocommerce-mix-and-match-products' ), '%t', '%w', '%u' ),
-			'i18n_total'            => __( 'Total Weight: ', 'wc-mnm-select-layout' )
-		);
-
-		wp_localize_script( 'wc-mnm-add-to-cart-select-layout', 'wc_mnm_select_params', $params );
-
 	}
 
 	/**
