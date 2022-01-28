@@ -17,24 +17,31 @@
 		this.initialize = function() {
 			
 			if( container.$mnm_form.hasClass( 'layout_select' ) ) {
-				self.$selects.on( 'change', this.set_config );
+				self.$selects.on( 'change', { container: container }, this.handle_change );
 				self.container.$mnm_form.on( 'wc-mnm-initialized', this.set_config );
 				self.container.$mnm_reset.on( 'wc-mnm-reset-configuration', this.reset );
 			}
 
 		};
 
+		/**
+		 * Handle input change.
+		 */
+		this.handle_change = function( event ) {
+			self.set_config( event, event.data.container );
+		};
 
 		/**
-		 * Update Quantities.
+		 *  Fetch config.
 		 */
-		this.set_config = function( event, container ) {
+		this.get_config = function( container ) {
+			var config = container.price_data.quantities;
+			for ( var prop in config ) {
+				config[prop] = 0;
+			}
 
-			var config = {};
-			var id;
-
-			self.$selects.each( function(i) {
-				id = parseInt( Number( $(this).val() ), 10 );
+			self.$selects.each( function() {
+				var id = parseInt( Number( $(this).val() ), 10 );
 	
 				if( id <= 0 ) {
 					return;
@@ -48,27 +55,33 @@
 				
 			});
 
-
-			self.container.update_container( $(this), config );
-
+			return config;
 		};
 
+		/**
+		 * Update Quantities.
+		 */
+		this.set_config = function( event, container ) {
+			container.update_container( event.currentTarget, self.get_config( container ) );
+		};
 
 		/**
 		 * Reset Quantities.
 		 */
 		this.reset = function( event, container ) {
-
+			
 			var default_selection;
 
-			self.$selects.each( function(i) {
+			self.$selects.each( function() {
 				default_selection = 'undefined' !== $(this).data( 'default' ) ? $(this).data( 'default' ) : '';
 				$(this).val( default_selection );			
 			});
 
+			self.set_config( event, container );
+
+			return false; // This tells MNM not to run the update_container();
+
 		};
-
-
 
 
 	} // End WC_MNM_Select_Layout.

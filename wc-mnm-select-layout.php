@@ -65,7 +65,6 @@ class WC_MNM_Select_Layout {
 		add_filter( 'woocommerce_mnm_get_posted_container_configuration', array( __CLASS__, 'get_posted_container_configuration' ), 10, 2 );
 		add_filter( 'woocommerce_mnm_get_posted_container_form_data', array( __CLASS__, 'rebuild_posted_container_form_data' ), 10, 3 );
 		
-
     }
 
 
@@ -338,7 +337,9 @@ class WC_MNM_Select_Layout {
 	 */
 	public static function register_scripts() {
 
-		wp_register_script( 'wc-mnm-add-to-cart-select-layout', self::plugin_url() . '/js/wc-mnm-add-to-cart-select-layout.js', array( 'wc-add-to-cart-mnm' ), WC_MNM_Select_Layout::VERSION, true );
+		$suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
+
+		wp_register_script( 'wc-mnm-add-to-cart-select-layout', self::plugin_url() . '/assets/js/frontend/wc-mnm-add-to-cart-select-layout' . $suffix . '.js', array( 'wc-add-to-cart-mnm' ), WC_MNM_Select_Layout::VERSION, true );
 
 		$params = array(
 			'i18n_max_weight_error' => __( 'Your configuration is too heavy. Please choose less than %max to continue&hellip;', 'wc-mnm-select-layout' ),
