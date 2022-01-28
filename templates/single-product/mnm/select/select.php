@@ -38,7 +38,8 @@ global $product;
 		$default = isset( $_REQUEST[ '_mnm_select' ] ) && isset( $_REQUEST[ '_mnm_select' ][$counter] ) ? intval( $_REQUEST[ '_mnm_select'][$counter] ) : $default;
 
 		foreach ( $product->get_available_children() as $child ) {
-			printf( '<option value="%d" %s>%s</option>', esc_attr( $child->get_id() ), selected( $child->get_id(), $default, false ), $child->get_name() );
+			$child_name = $product->is_priced_per_product() ? sprintf( esc_html__( '%1$s (%2$s)', 'wc-mnm-select-layout' ), $child->get_name(), wc_price( $child->get_price() ) ) : $child->get_name();
+			printf( '<option value="%d" %s>%s</option>', esc_attr( $child->get_id() ), selected( $child->get_id(), $default, false ), $child_name );
 		}
 		?>
 	</select>
