@@ -13,8 +13,8 @@
  * @see     https://docs.woocommerce.com/document/template-structure/
  * @author  Kathy Darling
  * @package WooCommerce Mix and Match/Templates
- * @since   1.0.0-beta
- * @version 1.0.0-beta-1
+ * @since   1.0.0
+ * @version 1.0.0
  */
 // Exit if accessed directly
 if ( ! defined( 'ABSPATH' ) ){
