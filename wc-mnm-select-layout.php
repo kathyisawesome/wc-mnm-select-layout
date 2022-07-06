@@ -38,15 +38,20 @@ class WC_MNM_Select_Layout {
 	 */
 	public static function init() {
 
+		// Quietly quit if MNM is not active.
+		if ( ! function_exists( 'wc_mix_and_match' ) ) {
+			return false;
+		}
+
 		// Load translation files.
 		add_action( 'init', array( __CLASS__, 'load_plugin_textdomain' ) );
 
 		// Add extra layout.
-		add_filter( 'woocommerce_mnm_supported_layouts', array( __CLASS__, 'add_layout') );	
+		add_filter( 'wc_mnm_supported_layouts', array( __CLASS__, 'add_layout' ) );	
 		add_action( 'woocommerce_admin_process_product_object', array( __CLASS__, 'process_meta' ), 20 );
 
 		// Display the selects on the front end.
-		add_action( 'woocommerce_mnm_content_loop', array( __CLASS__, 'switch_mnm_content_loop' ), 1 );
+		add_action( 'wc_mnm_content_loop', array( __CLASS__, 'switch_mnm_content_loop' ), 1 );
 
 		// Print custom styles.
 		add_action( 'wp_print_styles', array( __CLASS__, 'print_styles' ) );
@@ -61,8 +66,8 @@ class WC_MNM_Select_Layout {
 		add_action( 'wc_quick_view_enqueue_scripts', array( __CLASS__, 'load_scripts' ) );
 
 		// Add to cart validation.
-		add_filter( 'woocommerce_mnm_get_posted_container_configuration', array( __CLASS__, 'get_posted_container_configuration' ), 10, 2 );
-		add_filter( 'woocommerce_mnm_get_posted_container_form_data', array( __CLASS__, 'rebuild_posted_container_form_data' ), 10, 3 );
+		add_filter( 'wc_mnm_get_posted_container_configuration', array( __CLASS__, 'get_posted_container_configuration' ), 10, 2 );
+		add_filter( 'wc_mnm_get_posted_container_form_data', array( __CLASS__, 'rebuild_posted_container_form_data' ), 10, 3 );
 		
     }
 
@@ -93,7 +98,12 @@ class WC_MNM_Select_Layout {
 	 * @param  WC_Product_Mix_and_Match  $mnm_product_object
 	 */
 	public static function add_layout( $layouts ) {
-		$layouts['select'] = __( 'Dropdown Selects', 'wc-mnm-select-layout' );
+		$layouts['select'] = array(
+			'label'       => esc_html__( 'Dropdown Selects', 'wc-mnm-select-layout' ),
+			'description' => esc_html__( 'The number of slots are each displayed as a dropdown.', 'wc-mnm-select-layout' ),
+			'image'       => self::plugin_url() . '/assets/images/layout-select.svg',
+			'mb_display'  => true,
+		);
 		return $layouts;
 	}
 
@@ -126,13 +136,11 @@ class WC_MNM_Select_Layout {
 	 *
 	 * @param WC_Mix_and_Match $product the container product
 	 */
-	public static function switch_mnm_content_loop( $product ){
-
+	public static function switch_mnm_content_loop( $product ) {
 		if ( 'select' === $product->get_layout( 'edit' ) ) {
-			remove_action( 'woocommerce_mnm_content_loop', 'woocommerce_mnm_content_loop' );
-			add_action( 'woocommerce_mnm_content_loop', array( __CLASS__, 'display_selects' ) );
+			remove_action( 'wc_mnm_content_loop', 'wc_mnm_content_loop' );
+			add_action( 'wc_mnm_content_loop', array( __CLASS__, 'display_selects' ) );
 		}
-		
 	}
 
 	/**
@@ -142,7 +150,7 @@ class WC_MNM_Select_Layout {
 	 */
 	public static function display_selects( $product ) {
 
-		if( $product->has_available_children() ) {
+		if( $product->has_child_items() ) {
 
 			$counter = 1;
 			$min     = $product->get_min_container_size();
@@ -158,7 +166,7 @@ class WC_MNM_Select_Layout {
 							'container' => $product,
 							'counter'	=> $counter,
 							'required'  => $counter <= $min,
-							'default'   => apply_filters( 'woocommerce_mnm_select_default', '', $counter, $product ),
+							'default'   => apply_filters( 'wc_mnm_select_default', '', $counter, $product ),
 						),
 						'',
 						self::plugin_path() . '/templates/'
@@ -168,9 +176,6 @@ class WC_MNM_Select_Layout {
 				}
 
 			}
-
-
-
 
 		}
 
@@ -231,9 +236,8 @@ class WC_MNM_Select_Layout {
 			$posted_config = array();
 
 			$product_id      = $product->get_id();
-			$child_items	 = $product->get_children();
 
-			if ( ! empty( $child_items ) ) {
+			if ( $product->has_child_items() ) {
 
 				/*
 				 * Choose between $_POST or $_GET for grabbing data.
@@ -249,24 +253,28 @@ class WC_MNM_Select_Layout {
 
 					$counted = array_count_values( $posted_data[ '_mnm_select' ] );
 
-					foreach ( $child_items as $child_id => $child_product ) {
+					foreach ( $product->get_child_items() as $child_item ) {
+
+						$child_product    = $child_item->get_product();
+						$child_product_id = $child_product->get_id();
 
 						// Check that a product has been selected.
-						if ( array_key_exists( $child_id, $counted ) ) {
-							$child_item_quantity = intval( $counted[ $child_id ] );
+						if ( array_key_exists( $child_product_id, $counted ) ) {
+							$child_item_quantity = intval( $counted[ $child_product_id ] );
 						} else {
 							continue;
 						}
 
-						$posted_config[ $child_id ] = array();
+						$posted_config[ $child_product_id ] = array();
 
 						$parent_id = $child_product->get_parent_id();
 
-						$posted_config[ $child_id ][ 'mnm_child_id' ] = $child_id;
-						$posted_config[ $child_id ][ 'product_id' ]   = $parent_id > 0 ? $parent_id : $child_product->get_id();
-						$posted_config[ $child_id ][ 'variation_id' ] = $parent_id > 0 ? $child_product->get_id() : 0;
-						$posted_config[ $child_id ][ 'quantity' ]     = $child_item_quantity;
-						$posted_config[ $child_id ][ 'variation' ]    = $parent_id > 0 ? $child_product->get_variation_attributes() : array();
+						$posted_config[ $child_product_id ][ 'child_item_id' ] = $child_item->get_child_item_id();
+						$posted_config[ $child_product_id ][ 'mnm_child_id' ]  = $child_product_id;
+						$posted_config[ $child_product_id ][ 'product_id' ]    = $parent_id > 0 ? $parent_id              : $child_product->get_id();
+						$posted_config[ $child_product_id ][ 'variation_id' ]  = $parent_id > 0 ? $child_product->get_id(): 0;
+						$posted_config[ $child_product_id ][ 'quantity' ]      = $child_item_quantity;
+						$posted_config[ $child_product_id ][ 'variation' ]     = $parent_id > 0 ? $child_product->get_variation_attributes() : array();
 
 					}
 
@@ -346,7 +354,7 @@ class WC_MNM_Select_Layout {
 	 * Load the script anywhere the MNN add to cart button is displayed
 	 * @return void
 	 */
-	public static function load_scripts(){
+	public static function load_scripts() {
 		wp_enqueue_script( 'wc-mnm-add-to-cart-select-layout' );
 	}
 
@@ -377,4 +385,4 @@ class WC_MNM_Select_Layout {
 endif; // end class_exists check
 
 // Launch the whole plugin.
-add_action( 'woocommerce_mnm_loaded', array( 'WC_MNM_Select_Layout', 'init' ) );
+add_action( 'plugins_loaded', array( 'WC_MNM_Select_Layout', 'init' ), 20 );

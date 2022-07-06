@@ -14,7 +14,7 @@ Experimental mini-extension for [WooCommerce Mix and Match](https://woocommerce.
 
 ### Usage
 
-In the "Mix and Match" tab of the Product Data metabox you will an additional option in the "Layout" dropdown, called "Dropdown Selects"
+In the "Mix and Match" tab of the Product Data metabox you will an additional option in the "Layout" options, called "Dropdown Selects"
 
 ![screenshot of product data meta box showing "downdown selects" as the chosen "layout"](https://user-images.githubusercontent.com/507025/80611640-1aa2e800-89f8-11ea-90e9-9d3eab1f6419.png)
 
@@ -22,7 +22,8 @@ In the "Mix and Match" tab of the Product Data metabox you will an additional op
 ### Important
 
 1. This is provided as is and does not receive priority support.
-2. This requires [Mix and Match]( https://woocommerce.com/products/woocommerce-mix-and-match-products ) 1.12+
+2. Version 2.0 requires [Mix and Match]( https://woocommerce.com/products/woocommerce-mix-and-match-products ) 2.0+
+    2.1 Version 1.0 can still be used for Mix and Match v1.12.
 3. Can not be used for a container with no maximum quantity.
 4. Please test thoroughly before using in production.
 
