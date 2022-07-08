@@ -28,7 +28,7 @@ class WC_MNM_Select_Layout {
 	/**
 	 * constants
 	 */
-	CONST VERSION = '1.0.0';
+	const VERSION = '1.0.0';
 
 	/**
 	 * WC_MNM_Select_Layout Constructor
