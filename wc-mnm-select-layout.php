@@ -233,23 +233,25 @@ class WC_MNM_Select_Layout {
 
 		if ( is_object( $product ) && $product->is_type( 'mix-and-match' ) && 'select' === $product->get_layout() ) {
 
-			$posted_config = array();
+			/**
+			 * Choose between $_POST or $_GET for grabbing data.
+			 * We will not rely on $_REQUEST because checkbox names may not exist in $_POST but they may well exist in $_GET, for instance when editing a container from the cart.
+			 */
+			$posted_data = $_POST;
 
-			$product_id      = $product->get_id();
+			if ( empty( $_POST[ 'add-to-cart' ] ) && ! empty( $_GET[ 'add-to-cart' ] ) ) {
+				$posted_data = $_GET;
+			}
 
-			if ( $product->has_child_items() ) {
+			/**
+			 * Only reset $posted_config to empty array IF the _mnm_select key is posted. 
+			 * get_posted_container_configuration() is now used to revalidate cart item on `woocommerce_check_cart_items`. and so we dont want to reset the configuration when the cart is being revalidated.
+			 */
+			if ( isset( $posted_data[ '_mnm_select' ] ) ) {
 
-				/*
-				 * Choose between $_POST or $_GET for grabbing data.
-				 * We will not rely on $_REQUEST because checkbox names may not exist in $_POST but they may well exist in $_GET, for instance when editing a container from the cart.
-				 */
-				$posted_data = $_POST;
+				$posted_config = array();
 
-				if ( empty( $_POST[ 'add-to-cart' ] ) && ! empty( $_GET[ 'add-to-cart' ] ) ) {
-					$posted_data = $_GET;
-				}
-
-				if ( isset( $posted_data[ '_mnm_select' ] ) ) {
+				if ( $product->has_child_items() ) {
 
 					$counted = array_count_values( $posted_data[ '_mnm_select' ] );
 
